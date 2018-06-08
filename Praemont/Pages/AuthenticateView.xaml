@@ -1,0 +1,60 @@
+﻿<UserControl x:Class="Praemont.Pages.AuthenticateView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             Padding="20"
+             HorizontalAlignment="Center"
+             d:DesignWidth="200"
+             DataContext="{Binding Authenticate, Source={StaticResource Locator}}"
+             mc:Ignorable="d">
+    <StackPanel Width="155">
+        <TextBlock Text="To get started click the 'Get PIN' button. This opens a Web page where you'll authorize access. Copy the PIN from the Web page to here and click 'Sign In'" TextWrapping="Wrap" />
+
+        <StackPanel Margin="20,10">
+            <Button
+                Margin="5"
+                Padding="0,0,0,2"
+                FontSize="16"
+                Command="{Binding GetPinCommand}"
+                Content="Get Pin" />
+
+            <TextBox
+                x:Name="Pin"
+                Margin="10,20"
+                FontSize="18"
+                FontWeight="Bold"
+                Text="{Binding PinText, Mode=TwoWay}"
+                TextAlignment="Center">
+                <TextBox.Style>
+                    <Style>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding GetConfig.Tokens}" Value="{x:Null}">
+                                <Setter Property="UIElement.IsEnabled" Value="False" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBox.Style>
+            </TextBox>
+
+            <Button
+                Margin="5"
+                FontSize="16"
+                Command="{Binding SignInComannd}"
+                Content="Sign In">
+                <Button.Style>
+                    <Style>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ElementName=Pin, Path=Text.Length}" Value="0">
+                                <Setter Property="UIElement.IsEnabled" Value="False" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
+        </StackPanel>
+
+        <TextBlock Text="PINs can only be used once so there's no need to save them." TextWrapping="Wrap" />
+    </StackPanel>
+</UserControl>
+

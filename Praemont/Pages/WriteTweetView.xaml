@@ -1,0 +1,80 @@
+﻿<UserControl x:Class="Praemont.Pages.WriteTweetView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:converters="clr-namespace:Praemont.Utilities.Converters"
+             x:Name="Root"
+             Height="Auto"
+             d:DesignHeight="300"
+             d:DesignWidth="190"
+             DataContext="{Binding RelativeSource={RelativeSource Self}}"
+             Focusable="True"
+             mc:Ignorable="d">
+    <UserControl.Resources>
+        <converters:LengthToColorConverter x:Key="LengthToColorConverter" />
+        <converters:UriToCachedImageConverter x:Key="UriToCachedImageConverter" />
+        <converters:Win7FontConverter x:Key="Win7FontConverter" />
+    </UserControl.Resources>
+    <StackPanel Style="{StaticResource ComposeTweet}">
+        <TextBlock x:Name="ComposeTitle" Style="{StaticResource ComposeTweetTitleBlock}" />
+        <TextBox
+            x:Name="TextBox"
+            Style="{StaticResource ComposeTweetTextBox}"
+            AcceptsReturn="True"
+            IsVisibleChanged="OnIsVisibleChanged"
+            PreviewKeyDown="TextBoxOnPreviewKeyDown"
+            TextWrapping="Wrap" />
+        <Image Style="{StaticResource ComposeImageStyle}" Source="{Binding Image, Converter={StaticResource UriToCachedImageConverter}, IsAsync=True}" />
+        <DockPanel Margin="0,0,0,6">
+            <TextBlock
+                x:Name="Counter"
+                Style="{StaticResource ComposeCharCounter}"
+                Foreground="{Binding ElementName=TextBox, Path=Text.Length, Converter={StaticResource LengthToColorConverter}}"
+                DockPanel.Dock="Left"
+                Text="{Binding ElementName=TextBox, Path=Text.Length}" />
+            <StackPanel
+                HorizontalAlignment="Right"
+                DockPanel.Dock="Right"
+                Orientation="Horizontal">
+                <Button
+                    x:Name="Photo"
+                    Style="{StaticResource ComposeTweetButton}"
+                    Click="OnPhoto"
+                    ToolTip="Include Photo (Drag and Drop supported)">
+                    <Run FontFamily="{Binding Converter={StaticResource Win7FontFamilyConverter}}" Text="{Binding Converter={StaticResource Win7FontConverter}, ConverterParameter='&#xE114;', Mode=OneWay}" />
+                </Button>
+                <Button
+                    x:Name="Shorten"
+                    Style="{StaticResource ComposeTweetButton}"
+                    Click="OnShorten"
+                    ToolTip="Shorten links ">
+                    <Run FontFamily="{Binding Converter={StaticResource Win7FontFamilyConverter}}" Text="{Binding Converter={StaticResource Win7FontConverter}, ConverterParameter='&#xE167;', Mode=OneWay}" />
+                </Button>
+                <Button
+                    x:Name="Send"
+                    Width="55"
+                    Click="OnSend"
+                    ToolTip="Ctrl+Enter">
+                    <Button.Style>
+                        <Style BasedOn="{StaticResource ComposeTweetButton}" TargetType="Button">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ElementName=TextBox, Path=Text.Length}" Value="0">
+                                    <Setter Property="Button.IsEnabled" Value="False" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                    <StackPanel>
+                        <ProgressBar
+                            x:Name="SendButtonProgress"
+                            Width="40"
+                            Height="10"
+                            Visibility="Collapsed" />
+                        <TextBlock x:Name="SendButtonText" TextAlignment="Center" />
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+        </DockPanel>
+    </StackPanel>
+</UserControl>
